@@ -14,7 +14,9 @@ class KelompokController extends Controller
      */
     public function index()
     {
-        return view("pages.kelompok.list");
+        return view("pages.kelompok.list",[
+            "kelompok" => Kelompok::all()
+        ]);
     }
 
     /**
@@ -35,7 +37,17 @@ class KelompokController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "nama" => "required"
+        ]);
+        
+        Kelompok::create([
+            "nama" => $request->nama
+        ]);
+        
+        return redirect()
+            ->route("kelompok.index")
+            ->with("info","Berhasil Tambah Kelompok");
     }
 
     /**
@@ -57,7 +69,9 @@ class KelompokController extends Controller
      */
     public function edit(Kelompok $kelompok)
     {
-        //
+        return view('pages.kelompok.form',[
+            "kelompok" => $kelompok
+        ]);
     }
 
     /**
@@ -69,7 +83,13 @@ class KelompokController extends Controller
      */
     public function update(Request $request, Kelompok $kelompok)
     {
-        //
+        $kelompok->update([
+            "nama" => $request->nama
+        ]);
+        
+        return redirect()
+                ->route("kelompok.index")
+                ->with("info","Berhasil Update Kelompok");
     }
 
     /**
@@ -80,6 +100,10 @@ class KelompokController extends Controller
      */
     public function destroy(Kelompok $kelompok)
     {
-        //
+        $kelompok->delete();
+        
+        return redirect()
+            ->route("kelompok.index")
+            ->with("info","Berhasil Hapus Kelompok");
     }
 }
