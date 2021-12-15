@@ -14,7 +14,9 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        return view("pages.produk.list");
+        return view("pages.produk.list",[
+            "produk" => Produk::all()
+        ]);
     }
 
     /**
@@ -24,7 +26,9 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        return view("pages.produk.form");
+        return view("pages.produk.form",[
+            "kelompok" => \App\Models\Kelompok::all()
+        ]);
     }
 
     /**
@@ -35,7 +39,25 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "nama" => "required",
+            "kelompok_id" => "required",
+            "satuan" => "required|max:3",
+            "harga" => "required|numeric"
+        ]);
+
+        Produk::create($request->except("_token"));
+
+        // Produk::create([
+        //     "nama" => $request->nama,
+        //     "kelompok_id" => $request->kelompok_id,
+        //     "satuan" => $request->satuan,
+        //     "harga" => $request->harga
+        // ]);
+
+        return redirect()
+            ->route("produk.index")
+            ->with("info","Berhasil Tambah Produk");
     }
 
     /**
@@ -57,7 +79,10 @@ class ProdukController extends Controller
      */
     public function edit(Produk $produk)
     {
-        //
+        return view("pages.produk.form",[
+            "kelompok" => \App\Models\Kelompok::all(),
+            "produk" => $produk
+        ]);
     }
 
     /**
@@ -69,7 +94,10 @@ class ProdukController extends Controller
      */
     public function update(Request $request, Produk $produk)
     {
-        //
+        $produk->update($request->except('_token'));
+
+        return redirect()->route("produk.index")
+            ->with("info","Berhasil Update Produk");
     }
 
     /**
@@ -80,6 +108,9 @@ class ProdukController extends Controller
      */
     public function destroy(Produk $produk)
     {
-        //
+        $produk->delete();
+
+        return redirect()->route("produk.index")
+            ->with("info","Berhasil Hapus Produk");
     }
 }
