@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container">
+    @if (session('info'))
+        <div class="alert alert-success">
+            {{ session('info') }}
+        </div>
+    @endif
     <h1>List Barang Masuk</h1>
     <hr>
     <div class="d-flex flex-row-reverse mb-2">
@@ -17,7 +22,25 @@
             <th colspan=2 class="w-25">Action</th>
         </thead>
         <tbody>
-
+        @foreach ($barangmasuk as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->tanggal }}</td>
+                <td>{{ $item->produk->nama }}</td>
+                <td>{{ $item->qty }}</td>
+                <td>{{ $item->produk->satuan }}</td>
+                <td><a href="{{ route("barangmasuk.edit",$item) }}" class="btn btn-warning">Rubah</a></td>
+                <td>
+                    <a href="" class="btn btn-danger"
+                        onclick="event.preventDefault();
+                        document.getElementById('form-hapus-{{$item->id}}').submit();">Hapus</a>
+                    <form id="form-hapus-{{$item->id}}" action="{{ route("barangmasuk.destroy",$item) }}" method="post">
+                        @csrf
+                        @method("DELETE")
+                    </form>
+                </td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
 </div>

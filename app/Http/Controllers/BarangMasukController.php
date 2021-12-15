@@ -14,7 +14,9 @@ class BarangMasukController extends Controller
      */
     public function index()
     {
-        return view("pages.barangmasuk.list");
+        return view("pages.barangmasuk.list",[
+            "barangmasuk" => BarangMasuk::all()
+        ]);
     }
 
     /**
@@ -24,7 +26,9 @@ class BarangMasukController extends Controller
      */
     public function create()
     {
-        return view("pages.barangmasuk.form");
+        return view("pages.barangmasuk.form",[
+            "produk" => \App\Models\Produk::all()
+        ]);
     }
 
     /**
@@ -35,7 +39,16 @@ class BarangMasukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "tanggal" => "required",
+            "produk_id" => "required",
+            "qty" => "required|numeric"
+        ]);
+
+        BarangMasuk::create($request->except('_token'));
+
+        return redirect()->route("barangmasuk.index")
+            ->with("info","Berhasil Tambah Barang Masuk");
     }
 
     /**
@@ -55,9 +68,12 @@ class BarangMasukController extends Controller
      * @param  \App\Models\BarangMasuk  $barangMasuk
      * @return \Illuminate\Http\Response
      */
-    public function edit(BarangMasuk $barangMasuk)
+    public function edit(BarangMasuk $barangmasuk)
     {
-        //
+        return view("pages.barangmasuk.form",[
+            "produk" => \App\Models\Produk::all(),
+            "barangmasuk" => $barangmasuk
+        ]);
     }
 
     /**
@@ -67,9 +83,12 @@ class BarangMasukController extends Controller
      * @param  \App\Models\BarangMasuk  $barangMasuk
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BarangMasuk $barangMasuk)
+    public function update(Request $request, BarangMasuk $barangmasuk)
     {
-        //
+        $barangmasuk->update($request->except('_token'));
+
+        return redirect()->route("barangmasuk.index")
+            ->with("info","Berhasil Update Barang Masuk");
     }
 
     /**
@@ -78,8 +97,11 @@ class BarangMasukController extends Controller
      * @param  \App\Models\BarangMasuk  $barangMasuk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BarangMasuk $barangMasuk)
+    public function destroy(BarangMasuk $barangmasuk)
     {
-        //
+        $barangmasuk->delete();
+
+        return redirect()->route("barangmasuk.index")
+            ->with('info',"Berhasil Hapus Barang Masuk");
     }
 }

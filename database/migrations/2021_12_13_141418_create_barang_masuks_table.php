@@ -17,6 +17,7 @@ class CreateBarangMasuksTable extends Migration
             $table->id();
             $table->date("tanggal");
             $table->foreignId("produk_id")->constrained("tblproduk");
+            $table->integer("qty");
             $table->timestamps();
         });
     }
